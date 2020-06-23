@@ -21,3 +21,8 @@ Route::get('/about', function () {
     $tags = ['обучение', 'программирование', 'php', 'oop', 'hexlet'];
     return view('about', ['tags' => $tags]);
 });
+
+Route::get('/articles', function () {
+    $articles = App\Article::all();
+    return view('articles', ['articles' => $articles]);
+});
