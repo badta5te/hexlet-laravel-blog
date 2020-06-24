@@ -18,10 +18,10 @@ Route::get('/', function () {
 });
 
 
-Route::get('/articles', function () {
-    $articles = App\Article::all();
-    return view('articles', ['articles' => $articles]);
-});
 
-Route::get('/about', 'PageController@about');
+Route::get('/articles', 'ArticleController@index')
+    ->name('articles.index');
+
+Route::get('/about', 'PageController@about')
+    ->name('about');
 Route::get('/team', 'PageController@team');
