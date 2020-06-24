@@ -22,6 +22,9 @@ Route::get('/', function () {
 Route::get('/articles', 'ArticleController@index')
     ->name('articles.index');
 
+    Route::get('/articles/{id}', 'ArticleController@show')
+    ->name('articles.show');
+
 Route::get('/about', 'PageController@about')
     ->name('about');
 Route::get('/team', 'PageController@team');
