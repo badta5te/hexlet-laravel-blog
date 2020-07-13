@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateArticleRequest;
+use App\Http\Requests\CreateArticleRequest;
 
 class ArticleController extends Controller
 {
@@ -35,25 +37,14 @@ class ArticleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateArticleRequest $request)
     {
-        // Проверка введённых данных
-        // Если будут ошибки, то возникнет исключение
-        // Иначе возвращаются данные формы
-        $data = $this->validate($request, [
-            'name' => 'required|unique:articles',
-            'body' => 'required|max:1000',
-        ]);
-
         $article = new Article();
-        // Заполнение статьи данными из формы
-        $article->fill($data);
-        // При ошибках сохранения возникнет исключение
+        $article->fill($request->validated());
         $article->save();
 
         $request->session()->flash('status', 'Article created!');
 
-        // Редирект на указанный маршрут с добавлением флеш-сообщения
         return redirect()
             ->route('articles.index');
     }
@@ -76,9 +67,10 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function edit(Article $article)
+    public function edit($id)
     {
-        //
+        $article = Article::findOrFail($id);
+        return view('article.edit', compact('article'));
     }
 
     /**
@@ -88,9 +80,15 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, $id)
     {
-        //
+        $article = Article::findOrFail($id);
+        $article->fill($request->all())->save();
+
+        $request->session()->flash('status', 'Article updated!');
+
+        return redirect()
+            ->route('articles.index');
     }
 
     /**
