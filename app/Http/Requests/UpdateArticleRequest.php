@@ -28,7 +28,7 @@ class UpdateArticleRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique('articles', 'name')->ignore($this->id)
+                Rule::unique('articles', 'name')->ignore($this->article)
             ],
             'body' => 'required|string|between:4,4000'
         ];

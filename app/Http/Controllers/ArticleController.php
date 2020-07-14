@@ -35,7 +35,7 @@ class ArticleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return App\Http\Requests\CreateArticleRequest
      */
     public function store(CreateArticleRequest $request)
     {
@@ -43,10 +43,9 @@ class ArticleController extends Controller
         $article->fill($request->validated());
         $article->save();
 
-        $request->session()->flash('status', 'Article created!');
-
         return redirect()
-            ->route('articles.index');
+            ->route('articles.index')
+            ->with('status', 'Article created');
     }
 
     /**
@@ -55,9 +54,8 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Article $article)
     {
-        $article = Article::findOrFail($id);
         return view('article.show', compact('article'));
     }
 
@@ -67,9 +65,8 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Article $article)
     {
-        $article = Article::findOrFail($id);
         return view('article.edit', compact('article'));
     }
 
@@ -80,15 +77,13 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateArticleRequest $request, $id)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
-        $article = Article::findOrFail($id);
         $article->fill($request->all())->save();
 
-        $request->session()->flash('status', 'Article updated!');
-
         return redirect()
-            ->route('articles.index');
+            ->route('articles.index')
+            ->with('status', 'Article updated');
     }
 
     /**
@@ -97,15 +92,12 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Article $article)
     {
-        $article = Article::find($id);
-        if ($article) {
-          $article->delete();
-        }
+        $article->delete();
 
-        $request->session()->flash('status', 'Article deleted!');
-
-        return redirect()->route('articles.index');
+        return redirect()
+            ->route('articles.index')
+            ->with('status', 'Article deleted');
     }
 }
